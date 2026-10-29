@@ -1,0 +1,92 @@
+.app-shell { display: flex; min-height: 100%; }
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+  position: fixed; inset: 0 auto 0 0;
+  width: var(--sidebar-width);
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  display: flex; flex-direction: column;
+  padding: 20px 14px;
+  z-index: 40;
+  transition: transform 0.2s ease;
+}
+.sidebar-brand { display: flex; align-items: center; gap: 12px; padding: 4px 8px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.sidebar-brand svg { color: #fff; flex-shrink: 0; }
+.sidebar-brand strong { display: block; color: #fff; font-size: 17px; line-height: 1.2; }
+.sidebar-brand span { font-size: 13px; color: #9fb3d9; }
+
+.sidebar-nav { display: flex; flex-direction: column; gap: 4px; margin-top: 18px; flex: 1; }
+.nav-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 14px; border-radius: 8px;
+  color: var(--sidebar-text); font-size: 15px; font-weight: 500;
+  background: none; border: 0; width: 100%; text-align: left;
+}
+.nav-item:hover { background: rgba(255,255,255,0.08); }
+.nav-item.active { background: var(--primary); color: #fff; }
+.sidebar-footer { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; }
+
+.sidebar-overlay { display: none; }
+
+/* ---------- Main area ---------- */
+.main { margin-left: var(--sidebar-width); flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+.topbar {
+  height: var(--topbar-height);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px;
+  position: sticky; top: 0; z-index: 20;
+}
+.menu-toggle { display: none; background: none; border: 0; color: var(--text); padding: 6px; }
+
+.user-menu { position: relative; margin-left: auto; }
+.user-trigger { display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 6px 8px; border-radius: 8px; color: var(--text); text-align: left; }
+.user-trigger:hover { background: var(--page-bg); }
+.user-trigger .who strong { display: block; font-size: 14px; }
+.user-trigger .who span { font-size: 12px; color: var(--muted); }
+.user-dropdown {
+  position: absolute; right: 0; top: calc(100% + 6px);
+  min-width: 180px; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(15,31,61,0.12); padding: 6px; z-index: 30;
+}
+.user-dropdown button {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  background: none; border: 0; padding: 10px 12px; border-radius: 6px;
+  font-size: 14px; color: var(--text); text-align: left;
+}
+.user-dropdown button:hover { background: var(--page-bg); }
+
+.content { padding: 28px; max-width: 1400px; width: 100%; }
+
+.page-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 22px; flex-wrap: wrap; }
+.page-header h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; }
+.page-header p { color: var(--muted); margin-top: 6px; }
+.page-header-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+.breadcrumb { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 14px; color: var(--muted); }
+.breadcrumb .current { color: var(--primary); }
+.back-link { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; margin-bottom: 10px; }
+
+/* ---------- Login ---------- */
+.login-page { min-height: 100%; display: grid; place-items: center; padding: 24px; background: linear-gradient(160deg, #0b2352 0%, #123a80 100%); }
+.login-card { width: 100%; max-width: 400px; background: var(--surface); border-radius: 14px; padding: 32px; box-shadow: 0 20px 50px rgba(0,0,0,0.25); }
+.login-card .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; color: var(--primary); }
+.login-card h1 { font-size: 22px; color: var(--text); }
+.login-card .hint { margin-top: 16px; font-size: 13px; color: var(--muted); text-align: center; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: none; }
+  .sidebar-overlay.open { display: block; position: fixed; inset: 0; background: rgba(8,26,58,0.5); z-index: 35; }
+  .main { margin-left: 0; }
+  .menu-toggle { display: inline-flex; }
+  .topbar { padding: 0 16px; }
+  .content { padding: 18px 14px; }
+  .page-header h1 { font-size: 24px; }
+  .user-trigger .who { display: none; }
+}
