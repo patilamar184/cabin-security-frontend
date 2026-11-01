@@ -1,3 +1,5 @@
+import { ThemeProvider } from './context/ThemeContext';
+
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { ROUTES } from './config/constants';
 import AppLayout from './components/layout/AppLayout';
@@ -13,22 +15,30 @@ import AccountPage from './pages/Account/AccountPage';
 
 export default function App() {
   return (
-    <Routes>
-      <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+    <ThemeProvider>
+      <Routes>
+        <Route path={ROUTES.LOGIN} element={<LoginPage />} />
 
-      <Route element={<ProtectedRoute />}>
-        <Route element={<AppLayout />}>
-          <Route path={ROUTES.HOME} element={<HomePage />} />
-          <Route path={ROUTES.REGISTRATION} element={<RegistrationPage />} />
-          <Route path={ROUTES.VISITORS} element={<VisitorsPage />} />
-          <Route path={ROUTES.PREVIOUS_ENTRIES} element={<PreviousEntriesPage />} />
-          <Route path={`${ROUTES.EDIT_REGISTRATION}/:id?`} element={<EditRegistrationPage />} />
-          <Route path={`${ROUTES.DELETE_REGISTRATION}/:id?`} element={<DeleteRegistrationPage />} />
-          <Route path={ROUTES.ACCOUNT} element={<AccountPage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AppLayout />}>
+            <Route path={ROUTES.HOME} element={<HomePage />} />
+            <Route path={ROUTES.REGISTRATION} element={<RegistrationPage />} />
+            <Route path={ROUTES.VISITORS} element={<VisitorsPage />} />
+            <Route path={ROUTES.PREVIOUS_ENTRIES} element={<PreviousEntriesPage />} />
+            <Route
+              path={`${ROUTES.EDIT_REGISTRATION}/:id?`}
+              element={<EditRegistrationPage />}
+            />
+            <Route
+              path={`${ROUTES.DELETE_REGISTRATION}/:id?`}
+              element={<DeleteRegistrationPage />}
+            />
+            <Route path={ROUTES.ACCOUNT} element={<AccountPage />} />
+          </Route>
         </Route>
-      </Route>
 
-      <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
-    </Routes>
+        <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
+      </Routes>
+    </ThemeProvider>
   );
 }
