@@ -32,10 +32,45 @@ export async function deleteVisitor(id) {
   return request(`/visitors/${id}`, { method: 'DELETE' });
 }
 
-/** Starts fingerprint enrollment on the door device and waits for it to finish. */
+const ENROLLMENT_POLL_INTERVAL_MS = 1500;
+const ENROLLMENT_TIMEOUT_MS = 110000;
+
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * Starts enrollment on the ESP32 and waits until the backend confirms that
+ * the R307 stored the template. A queued command is NOT an enrolled fingerprint.
+ */
 export async function enrollFingerprint(visitorId) {
-  const data = USE_MOCK
-    ? await mock.enrollFingerprint(visitorId)
-    : await request(`/visitors/${visitorId}/fingerprints`, { method: 'POST' });
-  return toFingerprint(data);
+  if (USE_MOCK) {
+    return toFingerprint(await mock.enrollFingerprint(visitorId));
+  }
+
+  const started = await request(`/visitors/${visitorId}/fingerprints`, {
+    method: 'POST',
+  });
+
+  if (!started?.enrollment_id) {
+    throw new Error('The backend did not return a fingerprint enrollment ID.');
+  }
+
+  const deadline = Date.now() + ENROLLMENT_TIMEOUT_MS;
+  let latest = started;
+
+  while (Date.now() < deadline) {
+    if (latest.status === 'completed') {
+      return toFingerprint(latest);
+    }
+
+    if (latest.status === 'failed') {
+      throw new Error(latest.message || 'Fingerprint enrollment failed on the device.');
+    }
+
+    await wait(ENROLLMENT_POLL_INTERVAL_MS);
+    latest = await request(`/fingerprint-enrollments/${started.enrollment_id}`);
+  }
+
+  throw new Error(
+    'Fingerprint enrollment is taking longer than expected. Check the ESP32 Serial Monitor and try again only after confirming the current enrollment status.'
+  );
 }

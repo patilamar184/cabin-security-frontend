@@ -95,5 +95,7 @@ export const toUser = (u) => ({
 export const toFingerprint = (f) => ({
   id: f.fingerprint_id ?? f.id,
   enrolledAt: f.enrolled_at,
-  status: f.status ?? 'active',
+  // Enrollment records use "completed"; the visitor UI displays the saved
+  // fingerprint itself, whose effective state is "active".
+  status: f.status === 'completed' ? 'active' : (f.status ?? 'active'),
 });
