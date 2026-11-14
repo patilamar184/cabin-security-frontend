@@ -16,12 +16,25 @@ export default function Entries() {
   const [result, setResult] = useState('all');
 
   useEffect(() => {
-    logApi.list().then(setLogs).catch((e) => setError(e.message));
+  const fetchData = () => {
+    logApi.list()
+      .then(setLogs)
+      .catch((e) => setError(e.message));
+
     visitorApi.list().then((list) => {
       const map = {};
-      list.forEach((visitor) => { map[visitor.id] = visitor.name; });
+      list.forEach((visitor) => {
+        map[visitor.id] = visitor.name;
+      });
       setNames(map);
     }).catch(() => {});
+  };
+
+  fetchData();
+
+  const interval = setInterval(fetchData, 3000);
+
+  return () => clearInterval(interval);
   }, []);
 
   const results = useMemo(() => logs ? [...new Set(logs.map((log) => log.result))] : [], [logs]);
